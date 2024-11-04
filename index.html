@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Learn English Verbs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f7ff;
+            margin: 20px;
+            direction: ltr;
+        }
+        .game-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+        .level {
+            display: none;
+            margin: 20px 0;
+        }
+        .level.active {
+            display: block;
+        }
+        .verb-option {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        .verb-option:hover {
+            transform: scale(1.05);
+        }
+        .sentence {
+            font-size: 24px;
+            margin: 20px 0;
+            line-height: 1.5;
+        }
+        .blank {
+            display: inline-block;
+            width: 100px;
+            height: 30px;
+            border-bottom: 2px solid #2196F3;
+            margin: 0 5px;
+            text-align: center;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .progress {
+            height: 100%;
+            background-color: #2196F3;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        .score {
+            font-size: 20px;
+            color: #2196F3;
+        }
+        .level-indicator {
+            color: #4CAF50;
+        }
+        .welcome-screen {
+            text-align: center;
+            padding: 20px;
+        }
+        .end-screen {
+            text-align: center;
+            padding: 20px;
+        }
+        .player-name {
+            font-size: 24px;
+            color: #2196F3;
+            margin: 10px 0;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 18px;
+            margin: 10px 0;
+            width: 200px;
+            border: 2px solid #2196F3;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: #1976D2;
+        }
+        .feedback {
+            font-size: 20px;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        .feedback.correct {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .feedback.incorrect {
+            background-color: #f44336;
+            color: white;
+        }
+        .final-score {
+            font-size: 36px;
+            color: #2196F3;
+            margin: 20px 0;
+        }
+        .star {
+            color: #FFD700;
+            font-size: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="screen active">
+            <h1>Welcome to English Verbs Game!</h1>
+            <div>
+                <label for="player-name">Enter your name:</label>
+                <input type="text" id="player-name" placeholder="Your name">
+            </div>
+            <button onclick="startGame()">Start Game</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="stats">
+                <div class="player-name" id="display-name"></div>
+                <div class="score">Score: <span id="score">0</span></div>
+                <div class="level-indicator">Level: <span id="current-level">1</span>/4</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+
+            <!-- Level 1 -->
+            <div id="level1" class="level active">
+                <h2 class="level-title">Level 1: Fill in the verb</h2>
+                <div class="sentence">
+                    I <span class="blank" id="blank1"></span> to school
+                </div>
+                <div class="verb-options">
+                    <span class="verb-option" onclick="checkAnswer(1, 'go')">go</span>
+                    <span class="verb-option" onclick="checkAnswer(1, 'run')">run</span>
+                    <span class="verb-option" onclick="checkAnswer(1, 'eat')">eat</span>
+                    <span class="verb-option" onclick="checkAnswer(1, 'play')">play</span>
+                </div>
+                <div class="feedback" id="feedback1"></div>
+            </div>
+
+            <!-- Level 2 -->
+            <div id="level2" class="level">
+                <h2 class="level-title">Level 2: Fill in two verbs</h2>
+                <div class="sentence">
+                    I <span class="blank" id="blank2a"></span> and <span class="blank" id="blank2b"></span> at home
+                </div>
+                <div class="verb-options">
+                    <span class="verb-option" onclick="checkAnswer(2, 'eat')">eat</span>
+                    <span class="verb-option" onclick="checkAnswer(2, 'sleep')">sleep</span>
+                    <span class="verb-option" onclick="checkAnswer(2, 'play')">play</span>
+                    <span class="verb-option" onclick="checkAnswer(2, 'read')">read</span>
+                    <span class="verb-option" onclick="checkAnswer(2, 'write')">write</span>
+                    <span class="verb-option" onclick="checkAnswer(2, 'draw')">draw</span>
+                </div>
+                <div class="feedback" id="feedback2"></div>
+            </div>
+
+            <!-- Level 3 -->
+            <div id="level3" class="level">
+                <h2 class="level-title">Level 3: Arrange the words</h2>
+                <div class="sentence" id="scrambled">
+                    games play I
+                </div>
+                <div class="verb-options">
+                    <span class="verb-option" onclick="checkAnswer(3, 'I play games')">I play games</span>
+                    <span class="verb-option" onclick="checkAnswer(3, 'play games I')">play games I</span>
+                    <span class="verb-option" onclick="checkAnswer(3, 'games I play')">games I play</span>
+                </div>
+                <div class="feedback" id="feedback3"></div>
+            </div>
+
+            <!-- Level 4 -->
+            <div id="level4" class="level">
+                <h2 class="level-title">Level 4: Correct the verbs</h2>
+                <div class="sentence">
+                    He eat (should be eats) dinner and sleep (should be sleeps)
+                </div>
+                <div class="verb-options">
+                    <span class="verb-option" onclick="checkAnswer(4, 'eats-sleeps')">eats - sleeps</span>
+                    <span class="verb-option" onclick="checkAnswer(4, 'eat-sleep')">eat - sleep</span>
+                    <span class="verb-option" onclick="checkAnswer(4, 'eating-sleeping')">eating - sleeping</span>
+                </div>
+                <div class="feedback" id="feedback4"></div>
+            </div>
+
+            <button onclick="nextLevel()" id="nextButton" style="display: none;">Next Level</button>
+        </div>
+
+        <!-- End Screen -->
+        <div id="end-screen" class="screen">
+            <h1>Game Complete!</h1>
+            <div class="player-name" id="final-player-name"></div>
+            <div class="final-score">
+                Final Score: <span id="final-score">0</span>/4
+            </div>
+            <div id="stars"></div>
+            <div id="completion-message"></div>
+            <button onclick="restartGame()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        let playerName = '';
+        let currentLevel = 1;
+        let score = 0;
+        let levelCompleted = false;
+
+        function startGame() {
+            playerName = document.getElementById('player-name').value || 'Player';
+            document.getElementById('welcome-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+            document.getElementById('display-name').textContent = playerName;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = ((currentLevel - 1) / 4) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+            document.getElementById('current-level').textContent = currentLevel;
+        }
+
+        function checkAnswer(level, answer) {
+            if (levelCompleted) return;
+            
+            let correct = false;
+            let feedback = '';
+            const feedbackElement = document.getElementById('feedback' + level);
+            
+            switch(level) {
+                case 1:
+                    correct = answer === 'go';
+                    feedback = correct ? 'Correct! "I go to school" is right!' : 'Try again! This verb is not correct.';
+                    document.getElementById('blank1').textContent = answer;
+                    break;
+                case 2:
+                    correct = ['eat', 'sleep', 'play', 'read', 'write', 'draw'].includes(answer);
+                    feedback = correct ? 'Good choice!' : 'Try a different verb!';
+                    if (!document.getElementById('blank2a').textContent) {
+                        document.getElementById('blank2a').textContent = answer;
+                    } else {
+                        document.getElementById('blank2b').textContent = answer;
+                        correct = true; // Simplified for demo
+                    }
+                    break;
+                case 3:
+                    correct = answer === 'I play games';
+                    feedback = correct ? 'Perfect word order!' : 'Wrong order. Try again!';
+                    break;
+                case 4:
+                    correct = answer === 'eats-sleeps';
+                    feedback = correct ? 'You found the correct verbs!' : 'These verbs are not correct. Try again!';
+                    break;
+            }
+
+            feedbackElement.textContent = feedback;
+            feedbackElement.className = 'feedback ' + (correct ? 'correct' : 'incorrect');
+            
+            if (correct) {
+                score += 1;
+                document.getElementById('score').textContent = score;
+                levelCompleted = true;
+                document.getElementById('nextButton').style.display = 'block';
+            }
+        }
+
+        function nextLevel() {
+            if (currentLevel < 4) {
+                document.getElementById('level' + currentLevel).classList.remove('active');
+                currentLevel++;
+                document.getElementById('level' + currentLevel).classList.add('active');
+                levelCompleted = false;
+                document.getElementById('nextButton').style.display = 'none';
+                updateProgress();
+            } else {
+                showEndScreen();
+            }
+        }
+
+        function showEndScreen() {
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('end-screen').classList.add('active');
+            document.getElementById('final-player-name').textContent = playerName;
+            document.getElementById('final-score').textContent = score;
+            
+            // Add stars based on score
+            const starsContainer = document.getElementById('stars');
+            starsContainer.innerHTML = '';
+            for (let i = 0; i < score; i++) {
+                starsContainer.innerHTML += '<span class="star">⭐</span>';
+            }
+            
+            // Add completion message
+            const message = document.getElementById('completion-message');
+            if (score === 4) {
+                message.textContent = 'Perfect! You are a verb master!';
+            } else if (score >= 2) {
+                message.textContent = 'Good job! Keep practicing!';
+            } else {
+                message.textContent = 'Keep trying! You can do better!';
+            }
+        }
+
+        function restartGame() {
+            score = 0;
+            currentLevel = 1;
+            levelCompleted = false;
+            document.getElementById('score').textContent = '0';
+            document.getElementById('end-screen').classList.remove('active');
+            document.getElementById('welcome-screen').classList.add('active');
+            
+            // Reset all levels
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById('level' + i).classList.remove('active');
+                document.getElementById('feedback' + i).textContent = '';
+                document.getElementById('feedback' + i).className = 'feedback';
+            }
+            document.getElementById('level1').classList.add('active');
+            
+            // Clear blanks
+            document.getElementById('blank1').textContent = '';
+            document.getElementById('blank2a').textContent = '';
+            document.getElementById('blank2b').textContent = '';
+            
+            document.getElementById('nextButton').style.display = 'none';
+            updateProgress();
+        }
+    </script>
+</body>
+</html>
